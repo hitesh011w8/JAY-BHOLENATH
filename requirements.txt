@@ -53,3 +53,4 @@ pytube
 pycryptodome
 pyromod
 colorama
+imageio-ffmpeg
