@@ -72,7 +72,13 @@ import pyromod.listen
 pyromod.listen.Client.listen = pyromod.listen.listen
 
 from db import db
-
+# FFmpeg PATH fix
+os.environ["PATH"] = "/app/.apt/usr/bin:" + os.environ.get("PATH", "")
+try:
+    _ffmpeg_check = subprocess.run(["which", "ffmpeg"], capture_output=True, text=True)
+    print("FFMPEG PATH CHECK:", _ffmpeg_check.stdout, _ffmpeg_check.stderr)
+except Exception as _e:
+    print("FFMPEG CHECK ERROR:", _e)
 auto_flags = {}
 auto_clicked = False
 
