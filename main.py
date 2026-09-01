@@ -72,14 +72,16 @@ import pyromod.listen
 pyromod.listen.Client.listen = pyromod.listen.listen
 
 from db import db
-# FFmpeg PATH fix
-os.environ["PATH"] = "/app/.apt/usr/bin:" + os.environ.get("PATH", "")
-os.environ["LD_LIBRARY_PATH"] = "/app/.apt/usr/lib/x86_64-linux-gnu:/app/.apt/usr/lib/i386-linux-gnu:/app/.apt/usr/lib:/app/.apt/lib:" + os.environ.get("LD_LIBRARY_PATH", "")
-try:
-    _ffmpeg_check = subprocess.run(["which", "ffmpeg"], capture_output=True, text=True)
-    print("FFMPEG PATH CHECK:", _ffmpeg_check.stdout, _ffmpeg_check.stderr)
-except Exception as _e:
-    print("FFMPEG CHECK ERROR:", _e)
+import imageio_ffmpeg
+
+_ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+_bin_dir = "/app/bin"
+os.makedirs(_bin_dir, exist_ok=True)
+_ffmpeg_link = os.path.join(_bin_dir, "ffmpeg")
+if not os.path.exists(_ffmpeg_link):
+    os.symlink(_ffmpeg_exe, _ffmpeg_link)
+os.environ["PATH"] = _bin_dir + ":" + os.environ.get("PATH", "")
+print("STATIC FFMPEG SETUP AT:", _ffmpeg_link)
 auto_flags = {}
 auto_clicked = False
 
