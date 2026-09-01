@@ -6,13 +6,15 @@ WORKDIR /app
 
 # Install system dependencies first (optimized for download/upload performance)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    g++ \
-    cmake \
-    make \
-    libffi-dev \
-    ffmpeg \
-    aria2 \
+gcc \
+g++ \
+cmake \
+make \
+libffi-dev \
+ffmpeg \
+libpulse0 \
+libpulse-dev \
+aria2 \
     wget \
     unzip \
     && apt-get clean \
