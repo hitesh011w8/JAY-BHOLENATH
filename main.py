@@ -72,16 +72,24 @@ import pyromod.listen
 pyromod.listen.Client.listen = pyromod.listen.listen
 
 from db import db
-import imageio_ffmpeg
+import os
+import static_ffmpeg
 
-_ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+ffmpeg_path, ffprobe_path = static_ffmpeg.run.get_or_fetch_platform_executables_else_raise()
+
 _bin_dir = "/app/bin"
 os.makedirs(_bin_dir, exist_ok=True)
-_ffmpeg_link = os.path.join(_bin_dir, "ffmpeg")
-if not os.path.exists(_ffmpeg_link):
-    os.symlink(_ffmpeg_exe, _ffmpeg_link)
+
+for exe_path, name in [(ffmpeg_path, "ffmpeg"), (ffprobe_path, "ffprobe")]:
+    link = os.path.join(_bin_dir, name)
+    if os.path.lexists(link):
+        os.remove(link)
+    os.symlink(exe_path, link)
+
 os.environ["PATH"] = _bin_dir + ":" + os.environ.get("PATH", "")
-print("STATIC FFMPEG SETUP AT:", _ffmpeg_link)
+
+print("STATIC FFMPEG SETUP AT:", os.path.join(_bin_dir, "ffmpeg"))
+print("STATIC FFPROBE SETUP AT:", os.path.join(_bin_dir, "ffprobe"))
 auto_flags = {}
 auto_clicked = False
 
