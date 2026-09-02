@@ -25,7 +25,7 @@ import m3u8
 from urllib.parse import urljoin
 from vars import *  # Add this import
 from db import Database
-
+from watermark import add_watermark
 
 
 def get_duration(filename):
@@ -462,6 +462,16 @@ async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, cha
 
         if file_size_mb < 2000:
             # 📹 Upload as single video
+            # ✅ Apply watermark inside video (only if watermark != "/d")
+            if watermark and watermark.strip() != "/d":
+                watermarked_path = f"downloads/wm_{os.path.basename(filename)}"
+                try:
+                    add_watermark(filename, watermarked_path, username=watermark.strip())
+                    if os.path.exists(watermarked_path):
+                        os.remove(filename)
+                        filename = watermarked_path
+                except Exception as e:
+                    print(f"Watermark failed, using original file: {e}")
             dur = int(duration(filename))
             start_time = time.time()
 
