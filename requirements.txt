@@ -54,3 +54,4 @@ pycryptodome
 pyromod
 colorama
 imageio-ffmpeg
+static-ffmpeg
