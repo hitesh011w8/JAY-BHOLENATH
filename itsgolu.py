@@ -462,8 +462,8 @@ async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, cha
 
         if file_size_mb < 2000:
             # 📹 Upload as single video
-            # ✅ Apply watermark inside video (only if watermark != "/d")
-            if watermark and watermark.strip() != "/d":
+            # ✅ Apply watermark inside video (only if watermark != "/d" and size <= 200MB)
+            if watermark and watermark.strip() != "/d" and file_size_mb <= 250:
                 watermarked_path = f"downloads/wm_{os.path.basename(filename)}"
                 try:
                     add_watermark(filename, watermarked_path, username=watermark.strip())
@@ -472,6 +472,8 @@ async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, cha
                         filename = watermarked_path
                 except Exception as e:
                     print(f"Watermark failed, using original file: {e}")
+            elif watermark and watermark.strip() != "/d":
+                print(f"⚠️ Skipping watermark: file size {file_size_mb:.1f}MB exceeds 200MB limit")
             dur = int(duration(filename))
             start_time = time.time()
 
