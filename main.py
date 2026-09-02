@@ -901,16 +901,10 @@ async def txt_handler(bot: Client, m: Message):
 
             try:
                 cc = (
-    f"<b>🏷️ Iɴᴅᴇx ID  :</b> {str(count).zfill(3)}\n\n"
-    f"<b>🎞️  Tɪᴛʟᴇ :</b> {name1} \n\n"
-    f"<blockquote>📚  𝗕ᴀᴛᴄʜ : {b_name}</blockquote>"
-    f"\n\n<b>🎓  Uᴘʟᴏᴀᴅ Bʏ : {CR}</b>"
+    f"<b>𝐓𝐈𝐓𝐋𝐄 ➔<b> {name}\n\n<b>𝐁𝐀𝐓𝐂𝐇 ➔<b> {b_name}\n\n<b>𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐁𝐘 ➔<b> 𝐌 𝚨 𝐑 𝐂 𝚶 𔒝\n"
 )
                 cc1 = (
-    f"<b>🏷️ Iɴᴅᴇx ID :</b> {str(count).zfill(3)}\n\n"
-    f"<b>📑  Tɪᴛʟᴇ :</b> {name1} \n\n"
-    f"<blockquote>📚  𝗕ᴀᴛᴄʜ : {b_name}</blockquote>"
-    f"\n\n<b>🎓  Uᴘʟᴏᴀᴅ Bʏ : {CR}</b>"
+    f"<b>𝐓𝐈𝐓𝐋𝐄 ➔<b> {name}\n\n<b>𝐁𝐀𝐓𝐂𝐇 ➔<b> {b_name}\n\n<b>𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃 𝐁𝐘 ➔<b> 𝐌 𝚨 𝐑 𝐂 𝚶 𔒝\n"
 )
                 cczip = f'[📁]Zip Id : {str(count).zfill(3)}\n**Zip Title :** `{name1} .zip`\n<blockquote><b>Batch Name :</b> {b_name}</blockquote>\n\n**Extracted by➤**{CR}\n' 
                 ccimg = (
