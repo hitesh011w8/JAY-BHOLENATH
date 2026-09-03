@@ -473,7 +473,7 @@ async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, cha
                 except Exception as e:
                     print(f"Watermark failed, using original file: {e}")
             elif watermark and watermark.strip() != "/d":
-                print(f"⚠️ Skipping watermark: file size {file_size_mb:.1f}MB exceeds 200MB limit")
+                print(f"⚠️ Skipping watermark: file size {file_size_mb:.1f}MB exceeds 400MB limit")
             dur = int(duration(filename))
             start_time = time.time()
 
