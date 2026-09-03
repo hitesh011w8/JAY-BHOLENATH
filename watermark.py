@@ -9,24 +9,25 @@ def get_duration(file_path):
     return float(result.stdout.strip())
 
 def add_watermark(input_file, output_file,
-                   username="MICHAEL",
+                   username="MARCO",
                    start_duration=10, end_duration=10,
                    fontfile="font.otf",
-                   emoji_font="NotoColorEmoji.ttf"):
+                   logo_png="logo.png"):
     duration = get_duration(input_file)
     end_start = duration - end_duration
 
     cmd = [
         "ffmpeg", "-y",
         "-i", input_file,
-        "-vf", (
-            f"drawtext=fontfile={emoji_font}:text='💀':"
-            f"fontsize=40:fontcolor=white@0.7:"
-            f"x=(w-text_w)/2:y=(h-text_h)/2-30:"
-            f"enable='between(t,0,{start_duration})+between(t,{end_start},{duration})',"
-            f"drawtext=fontfile={fontfile}:text='{username}':"
+        "-i", logo_png,
+        "-filter_complex",
+        (
+            f"[1:v]scale=80:80[logo];"
+            f"[0:v][logo]overlay=(W-w)/2:(H-h)/2-40:"
+            f"enable='between(t,0,{start_duration})+between(t,{end_start},{duration})'[v1];"
+            f"[v1]drawtext=fontfile={fontfile}:text='{username}':"
             f"fontcolor=white@0.5:fontsize=26:"
-            f"x=(w-text_w)/2:y=(h-text_h)/2+20:"
+            f"x=(w-text_w)/2:y=(h-text_h)/2+30:"
             f"shadowcolor=black@0.6:shadowx=2:shadowy=2:"
             f"enable='between(t,0,{start_duration})+between(t,{end_start},{duration})'"
         ),
