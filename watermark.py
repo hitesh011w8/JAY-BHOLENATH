@@ -14,15 +14,9 @@ def get_duration(file_path):
 def add_watermark(input_file, output_file,
                    username="MARCO",
                    start_duration=10, end_duration=10,
-                   fontfile=None,
-                   logo_png=None):
+                   fontfile=None):
     if fontfile is None:
         fontfile = os.path.join(BASE_DIR, "font.otf")
-    if logo_png is None:
-        logo_png = os.path.join(BASE_DIR, "logo.png")
-
-    print(f"DEBUG: logo_png path = {logo_png}, exists = {os.path.exists(logo_png)}")
-    print(f"DEBUG: fontfile path = {fontfile}, exists = {os.path.exists(fontfile)}")
 
     duration = get_duration(input_file)
     end_start = duration - end_duration
@@ -30,16 +24,12 @@ def add_watermark(input_file, output_file,
     cmd = [
         "ffmpeg", "-y",
         "-i", input_file,
-        "-i", logo_png,
-        "-filter_complex",
-        (
-            f"[1:v]scale=80:80[logo];"
-            f"[0:v][logo]overlay=(W-w)/2:(H-h)/2-40:"
-            f"enable='between(t,0,{start_duration})+between(t,{end_start},{duration})'[v1];"
-            f"[v1]drawtext=fontfile={fontfile}:text='{username}':"
-            f"fontcolor=white@0.5:fontsize=26:"
-            f"x=(w-text_w)/2:y=(h-text_h)/2+30:"
-            f"shadowcolor=black@0.6:shadowx=2:shadowy=2:"
+        "-vf", (
+            f"drawtext=fontfile={fontfile}:text='{username}':"
+            f"fontcolor=white:fontsize=32:"
+            f"box=1:boxcolor=black@0.85:boxborderw=15:"
+            f"bordercolor=red:borderw=3:"
+            f"x=(w-text_w)/2:y=(h-text_h)/2:"
             f"enable='between(t,0,{start_duration})+between(t,{end_start},{duration})'"
         ),
         "-codec:a", "copy",
