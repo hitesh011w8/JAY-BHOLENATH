@@ -1,4 +1,7 @@
 import subprocess
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def get_duration(file_path):
     result = subprocess.run(
@@ -11,8 +14,16 @@ def get_duration(file_path):
 def add_watermark(input_file, output_file,
                    username="MARCO",
                    start_duration=10, end_duration=10,
-                   fontfile="font.otf",
-                   logo_png="logo.png"):
+                   fontfile=None,
+                   logo_png=None):
+    if fontfile is None:
+        fontfile = os.path.join(BASE_DIR, "font.otf")
+    if logo_png is None:
+        logo_png = os.path.join(BASE_DIR, "logo.png")
+
+    print(f"DEBUG: logo_png path = {logo_png}, exists = {os.path.exists(logo_png)}")
+    print(f"DEBUG: fontfile path = {fontfile}, exists = {os.path.exists(fontfile)}")
+
     duration = get_duration(input_file)
     end_start = duration - end_duration
 
