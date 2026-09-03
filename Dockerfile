@@ -42,6 +42,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 # Copy the rest of the application
 COPY . .
+RUN ls -la /app
 
 # Optimize aria2 configuration for Render's network
 RUN mkdir -p /etc/aria2 \
