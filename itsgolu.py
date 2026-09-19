@@ -404,7 +404,7 @@ async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, cha
             
             # Generate thumbnail at 10s
             subprocess.run(
-                f'ffmpeg -i "{filename}" -ss 00:00:10 -vframes 1 -q:v 2 -y "{temp_thumb}"',
+                f'ffmpeg -i "{filename}" -ss 00:00:25 -vframes 1 -vf "scale=320:-2:flags=lanczos" -q:v 1 -y "{temp_thumb}"',
                 shell=True
             )
 
