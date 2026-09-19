@@ -661,9 +661,17 @@ async def txt_handler(bot: Client, m: Message):
             if not os.path.exists("downloads"):
                 os.makedirs("downloads")
             temp_file = f"downloads/thumb_{m.from_user.id}.jpg"
+            temp_file_raw = f"downloads/thumb_{m.from_user.id}_raw.jpg"
             try:
                 # Download photo using correct Pyrogram method
-                await bot.download_media(message=input6.photo, file_name=temp_file)
+                await bot.download_media(message=input6.photo, file_name=temp_file_raw)
+                # Resize to fit Telegram's thumbnail requirements (max 320px, sharp scaling)
+                subprocess.run(
+                    f'ffmpeg -i "{temp_file_raw}" -vf "scale=320:-2:flags=lanczos" -q:v 2 -y "{temp_file}"',
+                    shell=True
+                )
+                if os.path.exists(temp_file_raw):
+                    os.remove(temp_file_raw)
                 thumb = temp_file
                 await editable.edit("**✅ Custom thumbnail saved successfully!**")
                 await asyncio.sleep(1)
