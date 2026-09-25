@@ -392,7 +392,23 @@ async def download_video(url, cmd, name):
         return name 
 
 
+# ... upar wale saare functions (download_video, human_readable_size, etc.) ...
 
+def generate_pdf_thumb(pdf_path):
+    """PDF ke pehle page ka thumbnail banata hai (JPEG, max 320px width)"""
+    try:
+        thumb_path = f"downloads/pdfthumb_{os.path.basename(pdf_path)}.jpg"
+        doc = fitz.open(pdf_path)
+        page = doc[0]
+        zoom = 320 / page.rect.width
+        mat = fitz.Matrix(zoom, zoom)
+        pix = page.get_pixmap(matrix=mat)
+        pix.save(thumb_path)
+        doc.close()
+        return thumb_path if os.path.exists(thumb_path) else None
+    except Exception as e:
+        print(f"PDF thumbnail failed: {e}")
+        return None
 
 
 async def send_vid(bot: Client, m: Message, cc, filename, thumb, name, prog, channel_id, watermark="𝐈𝐓'𝐬𝐆𝐎𝐋𝐔", topic_thread_id: int = None):
