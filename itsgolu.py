@@ -26,6 +26,7 @@ from urllib.parse import urljoin
 from vars import *  # Add this import
 from db import Database
 from watermark import add_watermark
+import fitz  # PyMuPDF
 
 
 def get_duration(filename):
