@@ -937,11 +937,11 @@ async def txt_handler(bot: Client, m: Message):
   
                 elif ".pdf" in url:
                     if "cwmediabkt99" in url:
-                        max_retries = 3  # Define the maximum number of retries
-                        retry_delay = 4  # Delay between retries in seconds
-                        success = False  # To track whether the download was successful
-                        failure_msgs = []  # To keep track of failure messages
-                        
+                        max_retries = 3
+                        retry_delay = 4
+                        success = False
+                        failure_msgs = []
+
                         for attempt in range(max_retries):
                             try:
                                 await asyncio.sleep(retry_delay)
@@ -952,7 +952,7 @@ async def txt_handler(bot: Client, m: Message):
                                 if response.status_code == 200:
                                     with open(f'{name}.pdf', 'wb') as file:
                                         file.write(response.content)
-                                    await asyncio.sleep(retry_delay)  # Optional, to prevent spamming
+                                    await asyncio.sleep(retry_delay)
                                     pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
                                     copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
                                     count += 1
@@ -960,34 +960,34 @@ async def txt_handler(bot: Client, m: Message):
                                     if pdf_thumb and os.path.exists(pdf_thumb):
                                         os.remove(pdf_thumb)
                                     success = True
-                                    break  # Exit the retry loop if successful
+                                    break
                                 else:
                                     failure_msg = await m.reply_text(f"Attempt {attempt + 1}/{max_retries} failed: {response.status_code} {response.reason}")
                                     failure_msgs.append(failure_msg)
-                                    
+
                             except Exception as e:
                                 failure_msg = await m.reply_text(f"Attempt {attempt + 1}/{max_retries} failed: {str(e)}")
                                 failure_msgs.append(failure_msg)
                                 await asyncio.sleep(retry_delay)
-                                continue 
+                                continue
                         for msg in failure_msgs:
                             await msg.delete()
-                            
+
                     else:
                         try:
-                                    cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
-                                    download_cmd = f"{cmd} -R 25 --fragment-retries 25"
-                                    os.system(download_cmd)
-                                    pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
-                                    copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
-                                    count += 1
-                                    os.remove(f'{name}.pdf')
-                                    if pdf_thumb and os.path.exists(pdf_thumb):
-                                        os.remove(pdf_thumb)
-                                except FloodWait as e:
-                                    await m.reply_text(str(e))
-                                    time.sleep(e.x)
-                                    continue
+                            cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
+                            download_cmd = f"{cmd} -R 25 --fragment-retries 25"
+                            os.system(download_cmd)
+                            pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
+                            copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
+                            count += 1
+                            os.remove(f'{name}.pdf')
+                            if pdf_thumb and os.path.exists(pdf_thumb):
+                                os.remove(pdf_thumb)
+                        except FloodWait as e:
+                            await m.reply_text(str(e))
+                            time.sleep(e.x)
+                            continue
                         
 
                 elif ".ws" in url and  url.endswith(".ws"):
