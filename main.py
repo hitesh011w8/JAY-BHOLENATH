@@ -953,9 +953,12 @@ async def txt_handler(bot: Client, m: Message):
                                     with open(f'{name}.pdf', 'wb') as file:
                                         file.write(response.content)
                                     await asyncio.sleep(retry_delay)  # Optional, to prevent spamming
-                                    copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', caption=cc1)
+                                    pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
+                                    copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
                                     count += 1
                                     os.remove(f'{name}.pdf')
+                                    if pdf_thumb and os.path.exists(pdf_thumb):
+                                        os.remove(pdf_thumb)
                                     success = True
                                     break  # Exit the retry loop if successful
                                 else:
@@ -972,16 +975,20 @@ async def txt_handler(bot: Client, m: Message):
                             
                     else:
                         try:
-                            cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
-                            download_cmd = f"{cmd} -R 25 --fragment-retries 25"
-                            os.system(download_cmd)
-                            copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', caption=cc1)
-                            count += 1
-                            os.remove(f'{name}.pdf')
-                        except FloodWait as e:
-                            await m.reply_text(str(e))
-                            time.sleep(e.x)
-                            continue    
+                                    cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
+                                    download_cmd = f"{cmd} -R 25 --fragment-retries 25"
+                                    os.system(download_cmd)
+                                    pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
+                                    copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
+                                    count += 1
+                                    os.remove(f'{name}.pdf')
+                                    if pdf_thumb and os.path.exists(pdf_thumb):
+                                        os.remove(pdf_thumb)
+                                except FloodWait as e:
+                                    await m.reply_text(str(e))
+                                    time.sleep(e.x)
+                                    continue
+                        
 
                 elif ".ws" in url and  url.endswith(".ws"):
                     try:
