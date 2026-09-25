@@ -950,20 +950,23 @@ async def txt_handler(bot: Client, m: Message):
                                 response = scraper.get(url)
 
                                 if response.status_code == 200:
-                                    with open(f'{name}.pdf', 'wb') as file:
-                                        file.write(response.content)
-                                    await asyncio.sleep(retry_delay)
-                                    pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
-                                    copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
-                                    count += 1
-                                    os.remove(f'{name}.pdf')
-                                    if pdf_thumb and os.path.exists(pdf_thumb):
-                                        os.remove(pdf_thumb)
-                                    success = True
-                                    break
+                                with open(f'{name}.pdf', 'wb') as file:
+                                    file.write(response.content)
+                                await asyncio.sleep(retry_delay)
+                                if thumb not in ["/d", "no"] and os.path.exists(thumb):
+                                    pdf_thumb = thumb
                                 else:
-                                    failure_msg = await m.reply_text(f"Attempt {attempt + 1}/{max_retries} failed: {response.status_code} {response.reason}")
-                                    failure_msgs.append(failure_msg)
+                                    pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
+                                copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
+                                count += 1
+                                os.remove(f'{name}.pdf')
+                                if pdf_thumb and pdf_thumb != thumb and os.path.exists(pdf_thumb):
+                                    os.remove(pdf_thumb)
+                                success = True
+                                break
+                            else:
+                                failure_msg = await m.reply_text(f"Attempt {attempt + 1}/{max_retries} failed: {response.status_code} {response.reason}")
+                                failure_msgs.append(failure_msg)
 
                             except Exception as e:
                                 failure_msg = await m.reply_text(f"Attempt {attempt + 1}/{max_retries} failed: {str(e)}")
@@ -978,12 +981,15 @@ async def txt_handler(bot: Client, m: Message):
                             cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
                             download_cmd = f"{cmd} -R 25 --fragment-retries 25"
                             os.system(download_cmd)
+                            if thumb not in ["/d", "no"] and os.path.exists(thumb):
+                            pdf_thumb = thumb
+                        else:
                             pdf_thumb = helper.generate_pdf_thumb(f'{name}.pdf')
-                            copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
-                            count += 1
-                            os.remove(f'{name}.pdf')
-                            if pdf_thumb and os.path.exists(pdf_thumb):
-                                os.remove(pdf_thumb)
+                        copy = await bot.send_document(chat_id=channel_id, document=f'{name}.pdf', thumb=pdf_thumb, caption=cc1)
+                        count += 1
+                        os.remove(f'{name}.pdf')
+                        if pdf_thumb and pdf_thumb != thumb and os.path.exists(pdf_thumb):
+                            os.remove(pdf_thumb)
                         except FloodWait as e:
                             await m.reply_text(str(e))
                             time.sleep(e.x)
